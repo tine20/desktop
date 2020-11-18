@@ -752,17 +752,17 @@ Window {
 
                         Menu {
                             id: moreActionsButtonContextMenu
-
-                            Instantiator {
-                                id: moreActionsButtonContextMenuInstantiator
-                                model: links
-                                onObjectAdded: moreActionsButtonContextMenu.insertItem(index, object)
-                                onObjectRemoved: moreActionsButtonContextMenu.removeItem(object)
-                                delegate: MenuItem {
-                                    id: moreActionsButtonContextMenuEntry
-                                    text: links[index]
-                                    onTriggered: activityModel.handleActivityAction(model.index, index)
-                                }
+                            MenuItem {
+                                text: "Cut"
+                                onTriggered: activityModel.handleActivityAction(model.index, 0)
+                            }
+                            MenuItem {
+                                text: "Copy"
+                                onTriggered: activityModel.handleActivityAction(model.index, 1)
+                            }
+                            MenuItem {
+                                text: "Paste"
+                                onTriggered: activityModel.handleActivityAction(model.index, 2)
                             }
                         }
                     }
