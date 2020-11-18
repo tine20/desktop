@@ -53,6 +53,7 @@ QHash<int, QByteArray> ActivityListModel::roleNames() const
     roles[ActionRole] = "type";
     roles[ActionIconRole] = "icon";
     roles[ActionTextRole] = "subject";
+    roles[ActionsLinksRole] = "links";
     roles[ActionTextColorRole] = "activityTextTitleColor";
     roles[ObjectTypeRole] = "objectType";
     roles[PointInTimeRole] = "dateTime";
@@ -458,6 +459,23 @@ void ActivityListModel::triggerActionAtIndex(int id) const
     } else {
         const auto link = data(modelIndex, LinkRole).toUrl();
         QDesktopServices::openUrl(link);
+    }
+}
+
+void ActivityListModel::handleActivityAction(int id, int action)
+{
+    if (id < 0 || id >= _finalList.size()) {
+        qCWarning(lcActivity) << "Couldn't trigger action at index" << id << "/ final list size:" << _finalList.size();
+        return;
+    }
+
+    const auto modelIndex = index(id);
+    const auto links = data(modelIndex, ActionsLinksRole).toList();
+
+    if (links.length() > 0 && action >= 0 && action < links.length()) {
+        auto exactLink = links.at(action).value<ActivityLink>();
+
+        qCDebug(lcActivity) << "Executing action on activity...";
     }
 }
 

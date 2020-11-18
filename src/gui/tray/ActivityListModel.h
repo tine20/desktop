@@ -76,6 +76,8 @@ public:
 
     Q_INVOKABLE void triggerActionAtIndex(int id) const;
 
+    Q_INVOKABLE void handleActivityAction(int id, int action);
+
 public slots:
     void slotRefreshActivity();
     void slotRemoveAccount();

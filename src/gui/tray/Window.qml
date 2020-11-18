@@ -537,16 +537,14 @@ Window {
 
                 Accessible.role: Accessible.ListItem
                 Accessible.name: path !== "" ? qsTr("Open %1 locally").arg(displayPath)
-                                                    : message
+                                             : message
                 Accessible.onPressAction: activityMouseArea.clicked()
 
                 MouseArea {
                     id: activityMouseArea
                     enabled: (path !== "" || link !== "")
                     anchors.left: activityItem.left
-                    anchors.right: (shareButton.visible) ? shareButton.left
-                                 : (replyButton.visible) ? replyButton.left
-                                 : activityItem.right
+                    anchors.right: activityActionsLayout.right
                     height: parent.height
                     anchors.margins: 2
                     hoverEnabled: true
@@ -575,13 +573,14 @@ Window {
                 Column {
                     id: activityTextColumn
                     anchors.left: activityIcon.right
+                    anchors.right: activityActionsLayout.left
                     anchors.leftMargin: 8
                     spacing: 4
                     Layout.alignment: Qt.AlignLeft
                     Text {
                         id: activityTextTitle
                         text: (type === "Activity" || type === "Notification") ? subject : message
-                        width: Style.activityLabelBaseWidth + ((path === "") ? activityItem.height : 0) + ((link === "") ? activityItem.height : 0) - 8
+                        width: parent.width
                         elide: Text.ElideRight
                         font.pixelSize: Style.topLinePixelSize
                         color: activityTextTitleColor
@@ -590,11 +589,11 @@ Window {
                     Text {
                         id: activityTextInfo
                         text: (type === "Sync") ? displayPath
-                            : (type === "File") ? subject
-                            : (type === "Notification") ? message
-                            : ""
+                                                : (type === "File") ? subject
+                                                                    : (type === "Notification") ? message
+                                                                                                : ""
                         height: (text === "") ? 0 : activityTextTitle.height
-                        width: Style.activityLabelBaseWidth + ((path === "") ? activityItem.height : 0) + ((link === "") ? activityItem.height : 0) - 8
+                        width: parent.width
                         elide: Text.ElideRight
                         font.pixelSize: Style.subLinePixelSize
                     }
@@ -603,7 +602,7 @@ Window {
                         id: activityTextDateTime
                         text: dateTime
                         height: (text === "") ? 0 : activityTextTitle.height
-                        width: Style.activityLabelBaseWidth + ((path === "") ? activityItem.height : 0) + ((link === "") ? activityItem.height : 0) - 8
+                        width: parent.width
                         elide: Text.ElideRight
                         font.pixelSize: Style.subLinePixelSize
                         color: "#808080"
@@ -624,56 +623,149 @@ Window {
                         }
                     }
                 }
-                Button {
-                    id: shareButton
+                RowLayout {
+                    id: activityActionsLayout
                     anchors.right: activityItem.right
-
-                    Layout.preferredWidth: (path === "") ? 0 : parent.height
-                    Layout.preferredHeight: parent.height
+                    spacing: 0
                     Layout.alignment: Qt.AlignRight
-                    flat: true
-                    hoverEnabled: true
-                    visible: (path === "") ? false : true
-                    display: AbstractButton.IconOnly
-                    icon.source: "qrc:///client/theme/share.svg"
-                    icon.color: "transparent"
-                    background: Rectangle {
-                        color: parent.hovered ? Style.lightHover : "transparent"
+
+                    Button {
+                        id: actionPrimaryButton
+
+                        Layout.preferredWidth: (links.length > 0 && links.length < 3) ? parent.height : 0
+                        Layout.preferredHeight: parent.height
+                        flat: true
+                        hoverEnabled: true
+                        visible: links.length > 0 && links.length < 3
+                        display: AbstractButton.IconOnly
+                        icon.source: "qrc:///client/theme/close.svg"
+                        icon.color: "transparent"
+                        background: Rectangle {
+                            color: parent.hovered ? Style.lightHover : "transparent"
+                        }
+                        ToolTip.visible: hovered
+                        ToolTip.delay: 1000
+                        ToolTip.text: qsTr("Primary action")
+                        onClicked: activityModel.handleActivityAction(model.index, 0)
+
+                        Accessible.role: Accessible.Button
+                        Accessible.name: qsTr("Share %1").arg(displayPath)
+                        Accessible.onPressAction: actionPrimaryButton.clicked()
                     }
-                    ToolTip.visible: hovered
-                    ToolTip.delay: 1000
-                    ToolTip.text: qsTr("Open share dialog")
-                    onClicked: Systray.openShareDialog(displayPath,absolutePath)
 
-                    Accessible.role: Accessible.Button
-                    Accessible.name: qsTr("Share %1").arg(displayPath)
-                    Accessible.onPressAction: shareButton.clicked()
-                }
+                    Button {
+                        id: actionSecondaryButton
 
-                Button {
-                    id: replyButton
-                    anchors.right: activityItem.right
+                        Layout.preferredWidth: (links.length > 1 && links.length < 3) ? parent.height : 0
+                        Layout.preferredHeight: parent.height
+                        flat: true
+                        hoverEnabled: true
+                        visible: links.length > 1 && links.length < 3
+                        display: AbstractButton.IconOnly
+                        icon.source: "qrc:///client/theme/add.svg"
+                        icon.color: "transparent"
+                        background: Rectangle {
+                            color: parent.hovered ? Style.lightHover : "transparent"
+                        }
+                        ToolTip.visible: hovered
+                        ToolTip.delay: 1000
+                        ToolTip.text: qsTr("Secondary action")
+                        onClicked: activityModel.handleActivityAction(model.index, 1)
 
-                    Layout.preferredWidth: (objectType == "chat" || objectType == "call") ? parent.height : 0
-                    Layout.preferredHeight: parent.height
-                    Layout.alignment: Qt.AlignRight
-                    flat: true
-                    hoverEnabled: true
-                    visible: (objectType == "chat" || objectType == "call") ? true : false
-                    display: AbstractButton.IconOnly
-                    icon.source: "qrc:///client/theme/reply.svg"
-                    icon.color: "transparent"
-                    background: Rectangle {
-                        color: parent.hovered ? Style.lightHover : "transparent"
+                        Accessible.role: Accessible.Button
+                        Accessible.name: qsTr("Share %1").arg(displayPath)
+                        Accessible.onPressAction: actionSecondaryButton.clicked()
                     }
-                    ToolTip.visible: hovered
-                    ToolTip.delay: 1000
-                    ToolTip.text: qsTr("Open Talk")
-                    onClicked: Qt.openUrlExternally(link)
 
-                    Accessible.role: Accessible.Button
-                    Accessible.name: qsTr("Open Talk %1").arg(link)
-                    Accessible.onPressAction: replyButton.clicked()
+                    Button {
+                        id: shareButton
+
+                        Layout.preferredWidth: (path === "") ? 0 : parent.height
+                        Layout.preferredHeight: parent.height
+                        Layout.alignment: Qt.AlignRight
+                        flat: true
+                        hoverEnabled: true
+                        visible: (path === "") ? false : true
+                        display: AbstractButton.IconOnly
+                        icon.source: "qrc:///client/theme/share.svg"
+                        icon.color: "transparent"
+                        background: Rectangle {
+                            color: parent.hovered ? Style.lightHover : "transparent"
+                        }
+                        ToolTip.visible: hovered
+                        ToolTip.delay: 1000
+                        ToolTip.text: qsTr("Open share dialog")
+                        onClicked: Systray.openShareDialog(displayPath,absolutePath)
+
+                        Accessible.role: Accessible.Button
+                        Accessible.name: qsTr("Share %1").arg(displayPath)
+                        Accessible.onPressAction: shareButton.clicked()
+                    }
+
+                    Button {
+                        id: replyButton
+
+                        Layout.preferredWidth: (objectType == "chat" || objectType == "call") ? parent.height : 0
+                        Layout.preferredHeight: parent.height
+                        Layout.alignment: Qt.AlignRight
+                        flat: true
+                        hoverEnabled: true
+                        visible: (objectType == "chat" || objectType == "call") ? true : false
+                        display: AbstractButton.IconOnly
+                        icon.source: "qrc:///client/theme/reply.svg"
+                        icon.color: "transparent"
+                        background: Rectangle {
+                            color: parent.hovered ? Style.lightHover : "transparent"
+                        }
+                        ToolTip.visible: hovered
+                        ToolTip.delay: 1000
+                        ToolTip.text: qsTr("Open Talk")
+                        onClicked: Qt.openUrlExternally(link)
+
+                        Accessible.role: Accessible.Button
+                        Accessible.name: qsTr("Open Talk %1").arg(link)
+                        Accessible.onPressAction: replyButton.clicked()
+                    }
+
+                    Button {
+                        id: moreActionsButton
+
+                        Layout.preferredWidth: (links.length > 2) ? parent.height : 0
+                        Layout.preferredHeight: parent.height
+                        flat: true
+                        hoverEnabled: true
+                        visible: links.length > 2
+                        display: AbstractButton.IconOnly
+                        icon.source: "qrc:///client/theme/more.svg"
+                        icon.color: "transparent"
+                        background: Rectangle {
+                            color: parent.hovered ? Style.lightHover : "transparent"
+                        }
+                        ToolTip.visible: hovered
+                        ToolTip.delay: 1000
+                        ToolTip.text: qsTr("Display more actions")
+                        onClicked: moreActionsButtonContextMenu.popup()
+
+                        Accessible.role: Accessible.Button
+                        Accessible.name: qsTr("Share %1").arg(displayPath)
+                        Accessible.onPressAction: moreActionsButton.clicked()
+
+                        Menu {
+                            id: moreActionsButtonContextMenu
+                            MenuItem {
+                                text: "Cut"
+                                onTriggered: activityModel.handleActivityAction(model.index, 0)
+                            }
+                            MenuItem {
+                                text: "Copy"
+                                onTriggered: activityModel.handleActivityAction(model.index, 1)
+                            }
+                            MenuItem {
+                                text: "Paste"
+                                onTriggered: activityModel.handleActivityAction(model.index, 2)
+                            }
+                        }
+                    }
                 }
             }
 
