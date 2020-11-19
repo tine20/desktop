@@ -753,15 +753,14 @@ Window {
                         Menu {
                             id: moreActionsButtonContextMenu
 
-                            Instantiator {
+                            Repeater {
                                 id: moreActionsButtonContextMenuInstantiator
                                 model: links
-                                onObjectAdded: moreActionsButtonContextMenu.insertItem(index, object)
-                                onObjectRemoved: moreActionsButtonContextMenu.removeItem(object)
+
                                 delegate: MenuItem {
                                     id: moreActionsButtonContextMenuEntry
-                                    text: links[index]
-                                    onTriggered: activityModel.handleActivityAction(model.index, index)
+                                    text: links[model.index]
+                                    onTriggered: activityModel.handleActivityAction(model.index, model.index)
                                 }
                             }
                         }
