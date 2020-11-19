@@ -141,9 +141,7 @@ QVariant ActivityListModel::data(const QModelIndex &index, int role) const
     case ActionsLinksRole: {
         QList<QVariant> customList;
         foreach (ActivityLink customItem, a._links) {
-            QVariant customVariant;
-            customVariant.setValue(customItem);
-            customList << customVariant;
+            customList << customItem._label;
         }
         return customList;
     }
