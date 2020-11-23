@@ -74,7 +74,7 @@ OwncloudSetupPage::OwncloudSetupPage(QWidget *parent)
     connect(_ui.createAccountButton, &QPushButton::clicked, this, &OwncloudSetupPage::slotGotoProviderList);
 
     _ui.login->hide();
-    _ui.slideShow->addSlide(Theme::hidpiFileName(":/client/theme/colored/wizard-nextcloud.png"), tr("Keep your data secure and under your control"));
+    _ui.slideShow->addSlide(Theme::hidpiFileName(":/client/theme/colored/wizard-tine20drive.png"), tr("Keep your data secure and under your control"));
     _ui.slideShow->addSlide(Theme::hidpiFileName(":/client/theme/colored/wizard-files.png"), tr("Secure collaboration & file exchange"));
     _ui.slideShow->addSlide(Theme::hidpiFileName(":/client/theme/colored/wizard-groupware.png"), tr("Easy-to-use web mail, calendaring & contacts"));
     _ui.slideShow->addSlide(Theme::hidpiFileName(":/client/theme/colored/wizard-talk.png"), tr("Screensharing, online meetings & web conferences"));

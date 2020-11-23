@@ -30,7 +30,7 @@ jobs:
         export PKG_CONFIG_PATH=$QT_BASE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
 
         #Set APPID for .desktop file processing
-        export LINUX_APPLICATION_ID=com.nextcloud.desktopclient.nextcloud
+        export LINUX_APPLICATION_ID=com.tine20.desktopclient.tine20drive
 
         #set defaults
         export SUFFIX="master"
@@ -68,16 +68,16 @@ jobs:
         # Move stuff around
         cd /app
 
-        mv ./usr/lib/x86_64-linux-gnu/nextcloud/* ./usr/lib/x86_64-linux-gnu/
+        mv ./usr/lib/x86_64-linux-gnu/tine20drive/* ./usr/lib/x86_64-linux-gnu/
         mv ./usr/lib/x86_64-linux-gnu/* ./usr/lib/
-        rm -rf ./usr/lib/nextcloud
+        rm -rf ./usr/lib/tine20drive
         rm -rf ./usr/lib/cmake
         rm -rf ./usr/include
         rm -rf ./usr/mkspecs
         rm -rf ./usr/lib/x86_64-linux-gnu/
 
         # Don't bundle nextcloudcmd as we don't run it anyway
-        rm -rf ./usr/bin/nextcloudcmd
+        rm -rf ./usr/bin/tine20drivecmd
 
         # Don't bundle the explorer extentions as we can't do anything with them in the AppImage
         rm -rf ./usr/share/caja-python/
@@ -85,12 +85,12 @@ jobs:
         rm -rf ./usr/share/nemo-python/
 
         # Move sync exclude to right location
-        mv ./etc/Nextcloud/sync-exclude.lst ./usr/bin/
+        mv ./etc/tine20drive/sync-exclude.lst ./usr/bin/
         rm -rf ./etc
 
         DESKTOP_FILE=/app/usr/share/applications/${LINUX_APPLICATION_ID}.desktop
-        sed -i -e 's|Icon=nextcloud|Icon=Nextcloud|g' ${DESKTOP_FILE} # Bug in desktop file?
-        cp ./usr/share/icons/hicolor/512x512/apps/Nextcloud.png . # Workaround for linuxeployqt bug, FIXME
+        sed -i -e 's|Icon=tine20drive|Icon=tine20drive|g' ${DESKTOP_FILE} # Bug in desktop file?
+        cp ./usr/share/icons/hicolor/512x512/apps/tine20drive.png . # Workaround for linuxeployqt bug, FIXME
 
 
         # Because distros need to get their shit together
@@ -113,12 +113,12 @@ jobs:
         ./squashfs-root/AppRun ${DESKTOP_FILE} -bundle-non-qt-libs -qmldir=$GITHUB_WORKSPACE/src/gui
 
         # Set origin
-        ./squashfs-root/usr/bin/patchelf --set-rpath '$ORIGIN/' /app/usr/lib/libnextcloudsync.so.0
+        ./squashfs-root/usr/bin/patchelf --set-rpath '$ORIGIN/' /app/usr/lib/libtine20drivesync.so.0
 
         # Build AppImage
         ./squashfs-root/AppRun ${DESKTOP_FILE} -appimage
 
-        mv Nextcloud*.AppImage Nextcloud-${SUFFIX}-${GITHUB_RUN_NUMBER}-x86_64.AppImage
+        mv Tine_2.0_Drive*.AppImage Tine_2.0_Drive-${SUFFIX}-${GITHUB_RUN_NUMBER}-x86_64.AppImage
 
     - name: Make artifact
       uses: actions/upload-artifact@v2
