@@ -638,7 +638,7 @@ Window {
                         Layout.preferredHeight: parent.height
                         flat: true
                         hoverEnabled: true
-                        visible: links.length > 0 && links.length < 3
+                        visible: actionNames.length > 0 && actionNames.length < 3
                         display: AbstractButton.IconOnly
                         icon.source: "qrc:///client/theme/close.svg"
                         icon.color: "transparent"
@@ -647,7 +647,7 @@ Window {
                         }
                         ToolTip.visible: hovered
                         ToolTip.delay: 1000
-                        ToolTip.text: qsTr("Primary action")
+                        ToolTip.text: qsTr(actionNames[0])
                         onClicked: activityModel.handleActivityAction(model.index, 0)
 
                         Accessible.role: Accessible.Button
@@ -662,7 +662,7 @@ Window {
                         Layout.preferredHeight: parent.height
                         flat: true
                         hoverEnabled: true
-                        visible: links.length > 1 && links.length < 3
+                        visible: actionNames.length > 1 && actionNames.length < 3
                         display: AbstractButton.IconOnly
                         icon.source: "qrc:///client/theme/add.svg"
                         icon.color: "transparent"
@@ -671,7 +671,7 @@ Window {
                         }
                         ToolTip.visible: hovered
                         ToolTip.delay: 1000
-                        ToolTip.text: qsTr("Secondary action")
+                        ToolTip.text: qsTr(actionNames[1])
                         onClicked: activityModel.handleActivityAction(model.index, 1)
 
                         Accessible.role: Accessible.Button
@@ -736,7 +736,7 @@ Window {
                         Layout.preferredHeight: parent.height
                         flat: true
                         hoverEnabled: true
-                        visible: links.length > 2
+                        visible: actionNames.length > 2
                         display: AbstractButton.IconOnly
                         icon.source: "qrc:///client/theme/more.svg"
                         icon.color: "transparent"
@@ -757,11 +757,11 @@ Window {
 
                             Repeater {
                                 id: moreActionsButtonContextMenuInstantiator
-                                model: links
+                                model: actionNames
 
                                 delegate: MenuItem {
                                     id: moreActionsButtonContextMenuEntry
-                                    text: links[model.index]
+                                    text: actionNames[model.index]
                                     onTriggered: activityModel.handleActivityAction(activityItem.itemIndex, model.index)
                                 }
                             }

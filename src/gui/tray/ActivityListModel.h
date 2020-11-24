@@ -44,6 +44,7 @@ public:
     AccountRole,
     ObjectTypeRole,
     ActionsLinksRole,
+    ActionsNamesRole,
     ActionTextRole,
     ActionTextColorRole,
     ActionRole,
@@ -76,7 +77,7 @@ public:
 
     Q_INVOKABLE void triggerActionAtIndex(int id) const;
 
-    Q_INVOKABLE void handleActivityAction(int id, int action);
+    Q_INVOKABLE void handleActivityAction(int activityIndex, int actionIndex);
 
 public slots:
     void slotRefreshActivity();

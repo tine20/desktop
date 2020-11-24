@@ -54,6 +54,7 @@ QHash<int, QByteArray> ActivityListModel::roleNames() const
     roles[ActionIconRole] = "icon";
     roles[ActionTextRole] = "subject";
     roles[ActionsLinksRole] = "links";
+    roles[ActionsNamesRole] = "actionNames";
     roles[ActionTextColorRole] = "activityTextTitleColor";
     roles[ObjectTypeRole] = "objectType";
     roles[PointInTimeRole] = "dateTime";
@@ -138,10 +139,19 @@ QVariant ActivityListModel::data(const QModelIndex &index, int role) const
             return QString();
         }
     }
-    case ActionsLinksRole: {
+    case ActionsNamesRole: {
         QList<QVariant> customList;
         foreach (ActivityLink customItem, a._links) {
             customList << customItem._label;
+        }
+        return customList;
+    }
+    case ActionsLinksRole: {
+        QList<QVariant> customList;
+        foreach (ActivityLink customItem, a._links) {
+            QVariant customVariant;
+            customVariant.setValue(customItem);
+            customList << customVariant;
         }
         return customList;
     }
@@ -460,18 +470,18 @@ void ActivityListModel::triggerActionAtIndex(int id) const
     }
 }
 
-void ActivityListModel::handleActivityAction(int id, int action)
+void ActivityListModel::handleActivityAction(int activityIndex, int actionIndex)
 {
-    if (id < 0 || id >= _finalList.size()) {
-        qCWarning(lcActivity) << "Couldn't trigger action at index" << id << "/ final list size:" << _finalList.size();
+    if (activityIndex < 0 || activityIndex >= _finalList.size()) {
+        qCWarning(lcActivity) << "Couldn't trigger action at index" << activityIndex << "/ final list size:" << _finalList.size();
         return;
     }
 
-    const auto modelIndex = index(id);
-    const auto links = data(modelIndex, ActionsLinksRole).toList();
+    const auto modelIndex = index(activityIndex);
+    const auto actions = data(modelIndex, ActionsLinksRole).toList();
 
-    if (links.length() > 0 && action >= 0 && action < links.length()) {
-        auto exactLink = links.at(action).value<ActivityLink>();
+    if (actions.length() > 0 && actionIndex >= 0 && actionIndex < actions.length()) {
+        auto action = actions.at(actionIndex).value<ActivityLink>();
 
         qCDebug(lcActivity) << "Executing action on activity...";
     }
