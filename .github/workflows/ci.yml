@@ -125,3 +125,11 @@ jobs:
       with:
         name: tine20drive
         path: /home/runner/work/_temp/_github_home/*.AppImage 
+
+    - name: Make Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: /home/runner/work/_temp/_github_home/*.AppImage
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
