@@ -246,7 +246,7 @@ QString Theme::helpUrl() const
 #ifdef APPLICATION_HELP_URL
     return QString::fromLatin1(APPLICATION_HELP_URL);
 #else
-    return QString::fromLatin1("https://docs.nextcloud.com/desktop/%1.%2/").arg(MIRALL_VERSION_MAJOR).arg(MIRALL_VERSION_MINOR);
+    return QString::fromLatin1("https://tine20.com").arg(MIRALL_VERSION_MAJOR).arg(MIRALL_VERSION_MINOR);
 #endif
 }
 
@@ -343,7 +343,7 @@ QString Theme::gitSHA1() const
     QString devString;
 #ifdef GIT_SHA1
     const QString githubPrefix(QLatin1String(
-        "https://github.com/nextcloud/desktop/commit/"));
+        "https://github.com/tine20/tine20Drive-NC/commit/"));
     const QString gitSha1(QLatin1String(GIT_SHA1));
     devString = QCoreApplication::translate("nextcloudTheme::about()",
         "<p><small>Built from Git revision <a href=\"%1\">%2</a>"
