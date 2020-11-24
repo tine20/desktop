@@ -540,6 +540,8 @@ Window {
                                              : message
                 Accessible.onPressAction: activityMouseArea.clicked()
 
+                property int itemIndex: model.index
+
                 MouseArea {
                     id: activityMouseArea
                     enabled: (path !== "" || link !== "")
@@ -632,7 +634,7 @@ Window {
                     Button {
                         id: actionPrimaryButton
 
-                        Layout.preferredWidth: (links.length > 0 && links.length < 3) ? parent.height : 0
+                        Layout.preferredWidth: visible ? parent.height : 0
                         Layout.preferredHeight: parent.height
                         flat: true
                         hoverEnabled: true
@@ -656,7 +658,7 @@ Window {
                     Button {
                         id: actionSecondaryButton
 
-                        Layout.preferredWidth: (links.length > 1 && links.length < 3) ? parent.height : 0
+                        Layout.preferredWidth: visible ? parent.height : 0
                         Layout.preferredHeight: parent.height
                         flat: true
                         hoverEnabled: true
@@ -730,7 +732,7 @@ Window {
                     Button {
                         id: moreActionsButton
 
-                        Layout.preferredWidth: (links.length > 2) ? parent.height : 0
+                        Layout.preferredWidth: visible ? parent.height : 0
                         Layout.preferredHeight: parent.height
                         flat: true
                         hoverEnabled: true
@@ -760,7 +762,7 @@ Window {
                                 delegate: MenuItem {
                                     id: moreActionsButtonContextMenuEntry
                                     text: links[model.index]
-                                    onTriggered: activityModel.handleActivityAction(model.index, model.index)
+                                    onTriggered: activityModel.handleActivityAction(activityItem.itemIndex, model.index)
                                 }
                             }
                         }
